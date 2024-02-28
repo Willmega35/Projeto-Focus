@@ -15,7 +15,7 @@ const soundsPlay = new Audio("sons/play.wav");
 const soundsPause = new Audio("sons/pause.mp3");
 const soundStop = new Audio("sons/beep.mp3");
 
-let tempDecorrido = 1500;
+let tempDecorrido = 15;
 let intervaloID = null;
 
 music.loop = true;
@@ -25,7 +25,7 @@ musicFoco.addEventListener("change", () => {
   else music.pause();
 });
 focoBtn.addEventListener("click", () => {
-  tempDecorrido = 1500;
+  tempDecorrido = 15;
   alteraContexto("foco");
   focoBtn.classList.add("active");
 });
@@ -62,9 +62,13 @@ function alteraContexto(contexto) {
       break;
   }
 }
-
 const contagemRegreciva = () => {
   if (tempDecorrido <= 0) {
+    const focoActive = html.getAttribute("data-contexto") == "foco";
+    if (focoActive) {
+      const event = new CustomEvent("FocoFinalizado");
+      document.dispatchEvent(event);
+    }
     soundStop.play();
     alert("Tempo Finalizado");
     zera();
@@ -82,8 +86,8 @@ function iniciarOuPausar() {
     soundsPause.play();
     return;
   }
-  intervaloID = setInterval(contagemRegreciva, 1000);
   soundsPlay.play();
+  intervaloID = setInterval(contagemRegreciva, 1000);
   startPauseImg.setAttribute("src", "imagens/pause.png");
   startPauseSpan.textContent = "Pausa";
 }
